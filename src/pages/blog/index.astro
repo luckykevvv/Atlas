@@ -1,7 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import SectionHeading from '../../components/SectionHeading.astro';
-import BlogCard from '../../components/BlogCard.astro';
+import BlogList from '../../components/BlogList.astro';
 import { getCollection } from 'astro:content';
 import { getLocaleFromUrl, getSiteConfig } from '../../config/site';
 
@@ -12,6 +12,11 @@ const posts = (await getCollection('blog'))
 	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
 const page = siteConfig.pages.blog;
+const labels = {
+	search: '搜索标题、摘要或标签',
+	all: '全部',
+	empty: '没有找到符合条件的笔记。',
+};
 ---
 
 <Layout title={page.title} description={page.description}>
@@ -21,8 +26,6 @@ const page = siteConfig.pages.blog;
 			title={page.heading}
 			description={page.intro}
 		/>
-		<div>
-			{posts.map((post) => <BlogCard post={post} />)}
-		</div>
+		<BlogList posts={posts} labels={labels} />
 	</section>
 </Layout>

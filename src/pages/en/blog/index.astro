@@ -1,7 +1,7 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
 import SectionHeading from '../../../components/SectionHeading.astro';
-import BlogCard from '../../../components/BlogCard.astro';
+import BlogList from '../../../components/BlogList.astro';
 import { getCollection } from 'astro:content';
 import { getLocaleFromUrl, getSiteConfig } from '../../../config/site';
 
@@ -12,13 +12,16 @@ const posts = (await getCollection('blog'))
 	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
 const page = siteConfig.pages.blog;
+const labels = {
+	search: 'Search title, summary, or tags',
+	all: 'All',
+	empty: 'No notes match the current filters.',
+};
 ---
 
 <Layout title={page.title} description={page.description}>
 	<section class="mx-auto max-w-5xl px-5 py-20 md:py-28">
 		<SectionHeading kicker={page.kicker} title={page.heading} description={page.intro} />
-		<div>
-			{posts.map((post) => <BlogCard post={post} />)}
-		</div>
+		<BlogList posts={posts} labels={labels} />
 	</section>
 </Layout>

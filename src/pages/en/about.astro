@@ -6,6 +6,7 @@ import { getLocaleFromUrl, getSiteConfig } from '../../config/site';
 
 const siteConfig = getSiteConfig(getLocaleFromUrl(Astro.url));
 const page = siteConfig.pages.about;
+const services = page.services.map((service) => (typeof service === 'string' ? { label: service } : service));
 ---
 
 <Layout title={page.title} description={page.description}>
@@ -25,11 +26,11 @@ const page = siteConfig.pages.about;
 	<section class="mx-auto max-w-6xl px-5 py-16">
 		<SectionHeading title={page.servicesTitle} description={page.servicesDescription} />
 		<div class="grid gap-4 md:grid-cols-2">
-			{siteConfig.services.map((service) => (
-				<div class="rounded-lg border border-white/10 bg-white/[0.03] p-6">
-					<h3 class="text-lg font-semibold text-white">{service}</h3>
-					<p class="mt-3 text-sm leading-6 text-zinc-400">{page.serviceDescription}</p>
-				</div>
+			{services.map((service) => (
+				<a href={service.href} class:list={['rounded-lg border border-white/10 bg-white/[0.03] p-6 transition', service.href && 'hover:border-white/30 hover:bg-white/[0.06]']}>
+					<h3 class="text-lg font-semibold text-white">{service.label}</h3>
+					<p class="mt-3 text-sm leading-6 text-zinc-400">{service.description ?? page.serviceDescription}</p>
+				</a>
 			))}
 		</div>
 	</section>

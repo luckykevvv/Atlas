@@ -1,9 +1,12 @@
 ---
 import { getCollection, render } from 'astro:content';
 import MarkdownLayout from '../../layouts/MarkdownLayout.astro';
+import { getBacklinks } from '../../utils/knowledge';
+import { getEntryDescription, getEntryTitle } from '../../utils/content';
 
 export async function getStaticPaths() {
 	const posts = (await getCollection('blog')).filter((post) => !post.data.draft);
+
 	return posts.map((post) => ({
 		params: { slug: post.id },
 		props: { post },
@@ -11,14 +14,17 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
+const allPosts = await getCollection('blog');
+const backlinks = getBacklinks(post.id, allPosts);
 const { Content } = await render(post);
 ---
 
 <MarkdownLayout
-	title={post.data.title}
-	description={post.data.description}
+	title={getEntryTitle(post)}
+	description={getEntryDescription(post)}
 	date={post.data.pubDate}
 	tags={post.data.tags}
+	backlinks={backlinks}
 >
 	<Content />
 </MarkdownLayout>

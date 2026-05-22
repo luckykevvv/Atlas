@@ -1,0 +1,40 @@
+---
+interface Props {
+	today: {
+		timeZone: string;
+		dateLocale: string;
+		greetings: readonly string[];
+	};
+}
+
+const { today } = Astro.props;
+const { dateLocale, greetings, timeZone } = today;
+---
+
+<script define:vars={{ dateLocale, greetings, timeZone }}>
+	const greeting = document.querySelector('[data-time-greeting]');
+	if (greeting) {
+		const hour = new Date().getHours();
+		const index = hour < 5 ? 0 : hour < 8 ? 1 : hour < 11 ? 2 : hour < 13 ? 3 : hour < 18 ? 4 : 5;
+		greeting.textContent = greetings[index] ?? greetings.at(-1) ?? greeting.textContent;
+	}
+
+	const time = document.querySelector('[data-melbourne-time]');
+	if (time) {
+		const formatter = new Intl.DateTimeFormat(dateLocale, {
+			timeZone,
+			year: 'numeric',
+			month: '2-digit',
+			day: '2-digit',
+			hour: '2-digit',
+			minute: '2-digit',
+			second: '2-digit',
+			hour12: false,
+		});
+		const updateTime = () => {
+			time.textContent = formatter.format(new Date());
+		};
+		updateTime();
+		window.setInterval(updateTime, 1000);
+	}
+</script>

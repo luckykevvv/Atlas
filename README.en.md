@@ -130,6 +130,24 @@ Replace the browser tab icon at:
 public/favicon.svg
 ```
 
+Social icons can be configured in `src/config/site.ts`. The `icon` field supports short text or an image URL:
+
+```ts
+{ label: 'GitHub', href: 'https://github.com/yourname', icon: 'https://cdn.simpleicons.org/github/white' }
+```
+
+The email icon uses `emailIcon` in the same config file:
+
+```ts
+emailIcon: 'https://cdn.simpleicons.org/gmail/white'
+```
+
+Hero headings, page headings, descriptions, and the contact panel heading support manual line breaks with `\n`:
+
+```ts
+headline: 'First line\nSecond line'
+```
+
 ## Content
 
 Blog posts live in:
@@ -174,6 +192,43 @@ featured: true
 Write your project story here.
 ```
 
+## Wiki Links And Knowledge Graph
+
+Blog Markdown supports Obsidian-style wiki links:
+
+```md
+[[design-engineering]]
+[[astro-content-collections|Astro Content Collections]]
+```
+
+During build or dynamic dev mode, these are converted into internal blog links. Blog posts also show backlinks at the bottom when other notes mention them.
+
+Wiki links are resolved by filename first, so you usually do not need to include the full folder path. For example, this file:
+
+```text
+src/content/blog/course-notes/week-02-expectation.md
+```
+
+can be linked as:
+
+```md
+[[week-02-expectation]]
+```
+
+If two files share the same name, use the full relative path:
+
+```md
+[[course-notes/week-02-expectation]]
+```
+
+The knowledge graph page lives at:
+
+```text
+/graph
+```
+
+The graph scans blog posts, tags, and wiki-link relationships. Post nodes can be clicked to open the related blog post.
+
 ## Deployment
 
 Atlas builds to static files in `dist/`.
@@ -183,6 +238,40 @@ npm run build
 ```
 
 Deploy the generated site with any static hosting platform. For Astro-specific deployment notes, see the [Astro deployment guide](https://docs.astro.build/en/guides/deploy/).
+
+## Dynamic Mode
+
+If you want Markdown or config edits on the server to update the site immediately, run Astro's dev server long-term:
+
+```sh
+npm install
+npm run dev:host
+```
+
+Default URL:
+
+```text
+http://SERVER_IP:4321
+```
+
+For long-running use, run it with PM2:
+
+```sh
+npm install
+npm install -g pm2
+npm run pm2:start
+pm2 save
+```
+
+Useful commands:
+
+```sh
+npm run pm2:restart
+npm run pm2:stop
+pm2 logs atlas-dynamic
+```
+
+Dynamic mode does not serve the static `dist/` output. It keeps Astro watching files on the server, which is useful for personal sites, private previews, or a VPS you control. For public access, put Nginx or Caddy with HTTPS in front of it.
 
 ## License
 

@@ -1,0 +1,22 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import KnowledgeGraph from '../../components/KnowledgeGraph.astro';
+import { getCollection } from 'astro:content';
+import { getKnowledgeGraph } from '../../utils/knowledge';
+import { getLocaleFromUrl, getSiteConfig, localizePath } from '../../config/site';
+
+const locale = getLocaleFromUrl(Astro.url);
+const siteConfig = getSiteConfig(locale);
+const page = siteConfig.pages.graph;
+const posts = (await getCollection('blog')).filter((post) => !post.data.draft);
+const graph = getKnowledgeGraph(posts);
+graph.nodes = graph.nodes.map((node) => (node.href ? { ...node, href: localizePath(locale, node.href) } : node));
+---
+
+<Layout title={page.title} description={page.description}>
+	<section class="mx-auto max-w-6xl px-5 py-20 md:py-28">
+		<SectionHeading kicker={page.kicker} title={page.heading} description={page.intro} />
+		<KnowledgeGraph graph={graph} labels={page.controls} />
+	</section>
+</Layout>
