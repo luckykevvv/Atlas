@@ -5,6 +5,8 @@ import { getBacklinks } from '../../utils/knowledge';
 import { getEntryDescription, getEntryTitle } from '../../utils/content';
 import { cleanContentSlug } from '../../config/i18n';
 
+export const prerender = true;
+
 export async function getStaticPaths() {
 	const posts = (await getCollection('blog')).filter((post) => !post.data.draft);
 

@@ -1,11 +1,12 @@
 # build output
-dist/
+/dist/
+/.atlas-data/
 
 # generated types
-.astro/
+/.astro/
 
 # dependencies
-node_modules/
+/node_modules/
 
 # logs
 npm-debug.log*
@@ -13,10 +14,11 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 .astro-dev*.log
+.atlas-start*.log
 
 # environment variables
-.env
-.env.production
+/.env
+/.env.production
 
 # macOS-specific files
 .DS_Store
@@ -25,18 +27,8 @@ pnpm-debug.log*
 .idea/
 
 # local personal content and overrides
-src/config/site.local.ts
-src/config/site.personal.ts
-src/content/Resume.pdf
-src/content/blog/2086/
-src/content/blog/3152/
-src/content/projects/role-play-card.md
-src/content/projects/personal/
-src/content/projects/private/
-src/content/private/
-src/content/**/*.pdf
-public/Resume.pdf
-public/bg.jpg
-public/anon.jpg
-public/private/
-public/local/
+/src/config/
+/src/content/
+/src/contents/
+/public/
+/config/

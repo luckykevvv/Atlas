@@ -4,6 +4,8 @@ import MarkdownLayout from '../../layouts/MarkdownLayout.astro';
 import { getLocaleFromUrl, getSiteConfig } from '../../config/site';
 import { cleanContentSlug } from '../../config/i18n';
 
+export const prerender = true;
+
 const locale = getLocaleFromUrl(Astro.url);
 const siteConfig = getSiteConfig(locale);
 

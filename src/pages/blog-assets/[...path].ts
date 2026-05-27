@@ -2,6 +2,8 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { extname, isAbsolute, join, relative, resolve } from 'node:path';
 
 const blogDir = resolve('src/content/blog');
+export const prerender = true;
+
 const contentTypes: Record<string, string> = {
 	'.avif': 'image/avif',
 	'.gif': 'image/gif',

@@ -27,7 +27,14 @@ const services = home.services.map((service) => (typeof service === 'string' ? {
 <Layout title={siteConfig.name} description={siteConfig.description}>
 	<section class="mx-auto grid max-w-6xl gap-14 px-5 py-16 md:grid-cols-[0.85fr_1.15fr] md:items-center md:py-24 lg:gap-20">
 		<div class="order-2 md:order-1 md:pt-10">
-			<p class="text-center text-sm text-zinc-500 md:text-left">{home.visitorText.replace('{count}', siteConfig.visitorCount)}</p>
+			<p
+				data-visitor-count
+				data-template={home.visitorText}
+				data-fallback-count={siteConfig.visitorCount}
+				class="text-center text-sm text-zinc-500 md:text-left"
+			>
+				{home.visitorText.replace('{count}', siteConfig.visitorCount)}
+			</p>
 			<div class="mx-auto mt-8 max-w-md rounded-lg border border-white/10 bg-white/[0.04] p-6 shadow-2xl shadow-black/30 md:mx-0 md:p-8">
 				<h2 class="text-xl font-semibold text-white">{siteConfig.today.title}</h2>
 				<div class="mt-4 space-y-2 text-base leading-7">
@@ -36,6 +43,9 @@ const services = home.services.map((service) => (typeof service === 'string' ? {
 					<p class="font-semibold text-white">{siteConfig.today.note}</p>
 					<p class="text-sm text-zinc-500">
 						{siteConfig.today.timeLabel}：<span data-melbourne-time>--:--</span>
+					</p>
+					<p class="text-sm text-zinc-500">
+						<a data-steam-status href="#" class="transition hover:text-white">Steam：加载中...</a>
 					</p>
 				</div>
 			</div>
@@ -121,5 +131,5 @@ const services = home.services.map((service) => (typeof service === 'string' ? {
 	</section>
 
 	<ContactPanel />
-	<HomeEnhancements today={siteConfig.today} />
+	<HomeEnhancements locale={locale} today={siteConfig.today} />
 </Layout>

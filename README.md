@@ -11,7 +11,7 @@ Atlas 是一个黑色系 [Astro](https://astro.build) 个人网站模板
 [![Astro 6](https://img.shields.io/badge/Astro-6-ff5d01?style=for-the-badge&logo=astro&logoColor=white)](https://astro.build/)
 [![Tailwind CSS 4](https://img.shields.io/badge/Tailwind_CSS-4-38bdf8?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 ![Node.js >= 22.12](https://img.shields.io/badge/Node.js-%3E%3D22.12-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
-![Static Output](https://img.shields.io/badge/Output-Static-111827?style=for-the-badge)
+![Static or Node SSR](https://img.shields.io/badge/Output-Static%20%2F%20Node%20SSR-111827?style=for-the-badge)
 
 🌐 在线预览：[https://blog.chihaya-anon.uk/](https://blog.chihaya-anon.uk/)
 
@@ -30,7 +30,7 @@ Atlas 是一个黑色系 [Astro](https://astro.build) 个人网站模板
 - [x] 主要站点文案集中在 `src/config/site.ts`
 - [x] 使用 `src/content.config.ts` 定义 Content Collections
 - [x] 使用 Tailwind CSS v4 和 `@tailwindcss/vite`
-- [x] 静态输出，适合部署到 GitHub Pages、Vercel、Netlify 或 Cloudflare Pages
+- [x] 默认静态输出，可选 Node SSR 动态模式用于 Steam 实时状态等服务端功能
 
 ## 2025.05.23 更新
 
@@ -46,7 +46,7 @@ Atlas 是一个黑色系 [Astro](https://astro.build) 个人网站模板
 - 新增图标组件，社交链接、快捷入口和邮箱图标支持图片 URL
 - 新增知识图谱页面和双链支持，博客可以通过 wiki link 建立文章关系
 - 博客动态路由调整为多级路径，方便按课程或主题组织 Markdown 文件
-- 新增动态开发/PM2 运行方式，方便服务器上修改内容后即时更新
+- 新增动态开发入口和 PM2 生产运行方式，用于需要服务端能力的部署
 
 ## 📝项目结构
 
@@ -69,6 +69,12 @@ public/
 
 ```sh
 npm install
+```
+
+也可以使用交互式安装脚本选择静态模式或动态服务器模式：
+
+```sh
+npm run setup
 ```
 
 启动开发服务器：
@@ -271,11 +277,12 @@ npm run build
 
 ## 动态更新模式
 
-如果你希望在服务器上修改 Markdown 或配置后立刻更新页面，可以长期运行 Astro dev server：
+Atlas 默认可以作为静态站点构建。如果你希望启用需要服务端的功能，例如 Steam 实时状态，请使用动态服务器模式：
 
 ```sh
 npm install
-npm run dev:host
+npm run build:dynamic
+npm run start
 ```
 
 默认监听：
@@ -284,7 +291,19 @@ npm run dev:host
 http://服务器IP:4321
 ```
 
-更适合长期运行的方式是 PM2：
+Steam 状态需要在服务器环境变量中配置：
+
+```sh
+STEAM_API_KEY=你的 Steam Web API Key
+STEAM_ID_64=你的 64 位 Steam ID
+HOST=0.0.0.0
+PORT=4321
+ATLAS_DATA_DIR=.atlas-data
+```
+
+Steam 个人资料和游戏状态需要允许公开，否则只能显示离线或不可用状态。动态访客计数会写入 `ATLAS_DATA_DIR` 下的本地 JSON 文件。不要提交真实 `.env`，仓库只提供 `.env.example` 模板。
+
+更适合长期运行的方式是 PM2，`pm2:start` 会先构建动态版本再启动生产服务器：
 
 ```sh
 npm install
@@ -301,7 +320,14 @@ npm run pm2:stop
 pm2 logs atlas-dynamic
 ```
 
-动态模式不会生成静态 `dist/`，而是让 Astro 在服务器上监听文件变化。适合个人站、内网预览或你自己维护的 VPS；如果公开访问，建议前面加 Nginx / Caddy 反向代理和 HTTPS。
+动态模式会生成 Node SSR 服务器，而不是只生成可直接托管的静态文件。适合个人站、内网预览或你自己维护的 VPS；如果公开访问，建议前面加 Nginx / Caddy 反向代理和 HTTPS。
+
+如果只需要静态站点，不启用 Steam 实时状态，继续使用：
+
+```sh
+npm install --omit=optional
+npm run build
+```
 
 ## License
 

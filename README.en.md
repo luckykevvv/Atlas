@@ -11,7 +11,7 @@ The template uses Astro Content Collections for blog posts and projects, so most
 [![Astro 6](https://img.shields.io/badge/Astro-6-ff5d01?style=for-the-badge&logo=astro&logoColor=white)](https://astro.build/)
 [![Tailwind CSS 4](https://img.shields.io/badge/Tailwind_CSS-4-38bdf8?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 ![Node.js >= 22.12](https://img.shields.io/badge/Node.js-%3E%3D22.12-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
-![Static Output](https://img.shields.io/badge/Output-Static-111827?style=for-the-badge)
+![Static or Node SSR](https://img.shields.io/badge/Output-Static%20%2F%20Node%20SSR-111827?style=for-the-badge)
 
 🌐 Live preview: [https://blog.chihaya-anon.uk/](https://blog.chihaya-anon.uk/)
 
@@ -29,7 +29,7 @@ The template uses Astro Content Collections for blog posts and projects, so most
 - Central site copy and navigation in `src/config/site.ts`
 - Astro Content Collections powered by `src/content.config.ts`
 - Tailwind CSS v4 through `@tailwindcss/vite`
-- Static output, ready for GitHub Pages, Vercel, Netlify, or Cloudflare Pages
+- Static output by default, with optional Node SSR mode for live server features
 
 ## Project Structure
 
@@ -52,6 +52,12 @@ Install dependencies:
 
 ```sh
 npm install
+```
+
+You can also use the interactive setup script to choose static mode or dynamic server mode:
+
+```sh
+npm run setup
 ```
 
 Start the development server:
@@ -214,7 +220,7 @@ Blog Markdown supports Obsidian-style wiki links:
 [[astro-content-collections|Astro Content Collections]]
 ```
 
-During build or dynamic dev mode, these are converted into internal blog links. Blog posts also show backlinks at the bottom when other notes mention them.
+During build, these are converted into internal blog links. Blog posts also show backlinks at the bottom when other notes mention them.
 
 Wiki links are resolved by filename first, so you usually do not need to include the full folder path. For example, this file:
 
@@ -254,11 +260,12 @@ Deploy the generated site with any static hosting platform. For Astro-specific d
 
 ## Dynamic Mode
 
-If you want Markdown or config edits on the server to update the site immediately, run Astro's dev server long-term:
+Atlas can still be built as a static site by default. If you want server-side features such as live Steam status, use dynamic server mode:
 
 ```sh
 npm install
-npm run dev:host
+npm run build:dynamic
+npm run start
 ```
 
 Default URL:
@@ -267,7 +274,19 @@ Default URL:
 http://SERVER_IP:4321
 ```
 
-For long-running use, run it with PM2:
+Steam status requires these server environment variables:
+
+```sh
+STEAM_API_KEY=your Steam Web API key
+STEAM_ID_64=your 64-bit Steam ID
+HOST=0.0.0.0
+PORT=4321
+ATLAS_DATA_DIR=.atlas-data
+```
+
+Your Steam profile and game details must be public. Otherwise the site can only show offline or unavailable status. Dynamic visitor counts are stored in a local JSON file under `ATLAS_DATA_DIR`. Do not commit a real `.env`; this repo only includes `.env.example`.
+
+For long-running use, run it with PM2. `pm2:start` builds the dynamic server first, then starts the production server:
 
 ```sh
 npm install
@@ -284,7 +303,14 @@ npm run pm2:stop
 pm2 logs atlas-dynamic
 ```
 
-Dynamic mode does not serve the static `dist/` output. It keeps Astro watching files on the server, which is useful for personal sites, private previews, or a VPS you control. For public access, put Nginx or Caddy with HTTPS in front of it.
+Dynamic mode generates a Node SSR server instead of static-only files. It is useful for personal sites, private previews, or a VPS you control. For public access, put Nginx or Caddy with HTTPS in front of it.
+
+If you only need the static site and do not use live Steam status, keep using:
+
+```sh
+npm install --omit=optional
+npm run build
+```
 
 ## License
 

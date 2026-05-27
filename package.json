@@ -8,9 +8,13 @@
   "scripts": {
     "dev": "astro dev",
     "dev:host": "astro dev --host 0.0.0.0 --port 4321",
+    "dev:dynamic": "node ./scripts/with-dynamic-env.mjs astro dev --host 0.0.0.0 --port 4321",
     "build": "astro build",
+    "build:dynamic": "node ./scripts/with-dynamic-env.mjs astro build",
+    "start": "node ./scripts/start-server.mjs",
     "preview": "astro preview",
-    "pm2:start": "pm2 start ecosystem.config.cjs",
+    "setup": "node ./scripts/setup.mjs",
+    "pm2:start": "npm run build:dynamic && pm2 start ecosystem.config.cjs",
     "pm2:restart": "pm2 restart atlas-dynamic",
     "pm2:stop": "pm2 stop atlas-dynamic",
     "astro": "astro"
@@ -22,5 +26,8 @@
     "rehype-katex": "^7.0.1",
     "remark-math": "^6.0.0",
     "tailwindcss": "^4.3.0"
+  },
+  "optionalDependencies": {
+    "@astrojs/node": "^10.1.1"
   }
 }
